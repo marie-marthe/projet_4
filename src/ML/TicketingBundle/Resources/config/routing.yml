@@ -1,8 +1,8 @@
 path: /
 defaults:
-_controller: MLTicketingBundle:Booking:index
+_controller: MLTicketingBundle:Ticketing:index
 
 ml_ticketing_schedule:
   path: /schedule
   defaults:
-    _controller: MLTicketingBundle:Booking:schedule
+    _controller: MLTicketingBundle:Ticketing:schedule
