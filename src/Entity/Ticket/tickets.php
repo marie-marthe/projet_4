@@ -90,7 +90,7 @@ class tickets
     private $reduction;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ML\TicketingBundle\Entity\Bill", inversedBy="tickets")
+     * @ORM\ManyToOne(targetEntity="TicketingBundle\TicketingBundle\Entity\Bill", inversedBy="tickets")
      *
      * @ORM\JoinColumn(nullable=false)
      */
