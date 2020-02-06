@@ -22,6 +22,11 @@ body {
     color: #757575;
 }
 
+.signature {
+    font-family: 'Fredericka the Great', cursive;
+    float: right;
+}
+
 .btn.btn-primary {
     border-radius: 30px;
     border: solid black 1px;
