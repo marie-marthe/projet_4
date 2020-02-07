@@ -1,16 +1,16 @@
 imports:
-  - { resource: config_dev.yml }
+    - { resource: config_dev.yml }
 
-  framework:
+framework:
     test: ~
     session:
-      storage_id: session.storage.mock_file
+        storage_id: session.storage.mock_file
     profiler:
-      collect: false
+        collect: false
 
-  web_profiler:
+web_profiler:
     toolbar: false
     intercept_redirects: false
 
-  swiftmailer:
+swiftmailer:
     disable_delivery: true

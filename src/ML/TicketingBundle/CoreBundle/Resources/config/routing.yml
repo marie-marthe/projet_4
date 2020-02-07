@@ -1,6 +1,0 @@
-
-# src/TicketingBundle/CoreBundle/Resources/config/routing.yml
-
-ml_core_homepage:
-  path:     /
-  defaults:
