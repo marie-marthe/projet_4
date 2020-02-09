@@ -1,6 +1,7 @@
 .jumbotron {
-    background-color: #FAFAFA;
+    background-color: #F0F0F0;
     color: #000000;
+    margin-bottom: 20px;
 }
 
 .btn.btn-primary {
@@ -15,6 +16,7 @@
     background-color: black;
     color: white;
 }
+
 .heading {
     background-color: #F9F0EB;
     padding-bottom: 5px;
@@ -25,6 +27,9 @@
     border: solid black 1px;
 }
 
+.btn.btn-default:hover {
+    border: solid white 2px;
+}
 
 @media(max-width:767px){}
 @media(min-width:768px){
@@ -47,9 +52,4 @@
     .container {
         width: 1170px;
     }
-
-.btn.btn-default:hover {
-    border: solid white 1px;
-}
-
 }
