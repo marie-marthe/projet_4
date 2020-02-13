@@ -1,0 +1,258 @@
+{% extends 'base.html.twig'%}
+
+{% block title %}BOOKING{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .well
+        {
+            margin-top: 70px;
+            background-color: white;
+            box-shadow: 2px 2px 10px -5px black;
+            border-radius: unset;
+        }
+        .breadcrumb
+        {
+            background-color: white;
+            margin-bottom: 100px;
+        }
+
+        .help-block
+        {
+            color: #AA3333;
+        }
+
+        .booking
+        {
+            margin-top: 100px;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        .radio
+        {
+            display: inline;
+            margin: 5px;
+        }
+
+
+        #booking_date
+        {
+            padding-bottom: 20px;
+            margin: auto;
+            width: 200px;
+            text-align: center;
+
+        }
+
+        #ticket_category
+        {
+            padding-bottom: 20px;
+            margin: auto;
+            width: 300px;
+            text-align: center;
+        }
+
+        #booking_mail
+        {
+            padding-bottom: 20px;
+            margin: auto;
+            max-width: 300px;
+            width: auto;
+            text-align: center;
+        }
+
+        .booking_submit
+        {
+            float: right;
+
+        }
+
+        #booking_control
+        {
+            margin-right: px;
+            margin-bottom: 20px;
+        }
+
+        .command_number
+        {
+            margin-top: 20px;
+            width: 150px;
+        }
+
+
+        .tarification
+        {
+            margin-top: 70px;
+            margin-bottom: 10px;
+            padding: 5px;
+            padding-left: 10px;
+
+        }
+
+        #display-caddie
+        {
+            padding: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="well">
+            <h1 style="text-align: center">Votre réservation</h1>
+            <!-- BreadCrumb-->
+            <ol class="breadcrumb" style="text-align: center">
+                <li class="active">Effectuer votre réservation</li>
+                <li><a href="#">Informations billets</a></li>
+                <li><a href="#">Paiement</a></li>
+            </ol>
+            <!-- Content-->
+
+            <p style="text-align: center">Le musée est ouvert tous les jours de 09h00 à 18h00, sauf le Mardi.
+                Fermeture les 1er Mai, 1er Novembre et 25 décembre.
+            </p>
+
+            <div class="booking row" >
+
+                <div class="col-sm-8" id="booking-form">
+
+                    <div id="">
+                        {{ form_start(form) }}
+                        <div id="booking_date">
+                            {{ form_label(form.bookingDate) }}
+                            {{ form_widget(form.bookingDate) }}
+                            {{ form_errors(form.bookingDate) }}
+                        </div>
+                        <div id="ticket_category">
+                            {{ form_label(form.ticketCategory) }}
+                            {{ form_widget(form.ticketCategory) }}
+                            {{ form_errors(form.ticketCategory) }}
+                        </div>
+                        <div id="booking_mail">
+                            {{ form_label(form.userMail) }}
+                            {{ form_widget(form.userMail) }}
+                            {{ form_errors(form.userMail) }}
+                        </div>
+
+                        <div id="booking_control">
+
+                        <span id="ticket_quantity_control">
+                            <button type="button" class="btn btn-default" id="remove-ticket" data-toggle="tooltip" data-placement="right" title="Retirer un billet au panier">
+                            <span class="glyphicon glyphicon-minus" ></span>
+                        </button>
+                        <button type="button" class="btn btn-default" id="add-ticket" data-toggle="tooltip" data-placement="left" title="Ajouter un billet panier">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                        </span>
+                            <button type="submit" class="btn btn-default booking_submit" data-toggle="tooltip" data-placement="left" title="Etape suivante">
+                                Valider <span class="glyphicon glyphicon-chevron-right"></span>
+                            </button>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+
+                <div class=" caddie col-sm-4">
+                    <div id="display-caddie">
+                        <strong>Panier : </strong>
+                        <span id="cart" class="pull-right">  </span><br/>
+
+
+                    </div>
+
+                    <div class="tarification">
+                        <dl>
+                            <dt>Tarifs du musée:</dt>
+
+                            <dd>
+                                De 4 à 12 ans : 8 euros.
+                            </dd>
+                            <dd>
+                                De 13 à 59 ans : 16 euros.
+                            </dd>
+                            <dd>
+                                60 ans et plus : 12 euros.
+                            </dd>
+                            <dd>
+                                Tarif réduit : 10 euros.
+                            </dd>
+                            <dd>
+                                L'entrée est gratuite pour les enfants de moins de 3 ans.
+                            </dd>
+                        </dl>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ asset('build/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('build/js/bootstrap-datepicker.fr.js') }}" charset="UTF-8"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            // datepicker parameters
+            $('.datepicker').datepicker({
+                language: 'fr',
+                format: 'dd-mm-yyyy',
+                orientation: 'bottom',
+                startDate: 'today',
+                todayHighlight: 'true',
+                daysOfWeekDisabled: '2'
+            });
+
+        // Control of Caddie
+            var ticketQuantity = $("input[id='booking_ticketQuantity']");
+            if (ticketQuantity.val() !== ''){
+                var content = ticketQuantity.val();
+                $('#cart').html(content +' Billet');
+            }else{
+                content = 0;
+                $('#cart').html('Votre panier est vide');
+            }
+
+            // Add a ticket to the caddie
+            $('#add-ticket').click(function (e) {
+                e.preventDefault();
+                content++;
+                $('#cart').html(content + ' Billet');
+                ticketQuantity.val(content);
+            });
+
+            // Remove a ticket from the cart
+            $('#remove-ticket').click(function (e) {
+                e.preventDefault();
+                if (content > 0) {
+                    content--;
+                    $('#cart').html(content + ' Billet');
+                    ticketQuantity.val(content);
+                }
+            });
+
+            // if tickets = 0, not submit the form
+            $("form").submit(function (event) {
+
+                if (ticketQuantity.val() > 0) return true;
+                $('#cart').text('Votre panier est vide');
+                event.preventDefault();
+            })
+        });
+    </script>
+
+{% endblock %}
+
+
+
+
