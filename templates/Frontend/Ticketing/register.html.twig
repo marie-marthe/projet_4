@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form _self %}
+
+{# OverWrite the twig collection widget #}
+{% block _tickets_tickets_entry_widget %}
+    {% spaceless %}
+            {% for ticket in form %}
+                {{ form_label(ticket) }}
+                {{ form_widget(ticket) }}
+                {{ form_errors(ticket) }}
+            {% endfor %}
+{% endspaceless %}
+{% endblock %}
+
+{# Customize form protype#}
+{%- block form_row -%}
+    {% spaceless %}
+        <div class="panel panel-default col-sm-6">
+            <h4>{{- form_label(form) -}}</h4>
+                {{- form_widget(form) -}}
+                {{- form_errors(form) -}}
+        </div>
+    {% endspaceless %}
+{%- endblock form_row -%}
+
+
+{#                       #}
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .well
+        {
+            margin-top: 70px;
+            min-width: 330px;
+            background-color: white;
+            box-shadow: 2px 2px 10px -5px black;
+            border-radius: unset;
+        }
+        .breadcrumb
+        {
+            background-color: white;
+            margin-bottom: 100px;
+        }
+
+        .register
+        {
+            margin-left:10px;
+            margin-right: 10px;
+            margin-top: 150px;
+        }
+
+        .panel
+        {
+            width: 300px;
+            margin-right: 20px;
+            margin-top: 0;
+        }
+
+        #caddie_display
+        {
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .tarification
+        {
+            margin-top: 45px;
+            margin-bottom: 10px;
+            padding: 5px;
+            padding-left: 10px;
+        }
+
+        .ticket_form
+        {
+            padding-bottom: 10px;
+        }
+
+        .register_submit
+        {
+            float: right;
+        }
+
+        .help-block
+        {
+            color: #AA3333;
+        }
+
+        #booking_edit
+        {
+            color: inherit;
+        }
+
+
+        .caddie
+        {
+            margin-top: 20px;
+        }
+
+        @-moz-document url-prefix()
+        {
+            fieldset { display: table-cell; }
+        }
+    </style>
+{% endblock %}
+
+{% block title %} Register {% endblock %}
+
+
+
+
+
+{% block content %}
+
+    <div class="container">
+        <div class="well">
+            <h1 style="text-align: center">Informations visiteurs</h1>
+
+            <!-- BreadCrumb-->
+            <ol class="breadcrumb" style="text-align: center">
+                <li><a href="#">Constituer votre panier</a></li>
+                <li class="active">Informations visiteurs</li>
+                <li><a href="#">Paiement</a></li>
+            </ol>
+            <!-- Content-->
+
+
+            <div class="register row">
+
+
+                <div class=" ticket_form col-sm-8">
+                    {% for message in app.session.flashbag.get('info') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        {{ form_start(form) }}
+                        {{ form_label(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_errors(form) }}
+
+                        <button type="submit" class="btn btn-default register_submit" data-toggle="tooltip" data-placement="left" title="Etape suivante">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                        <a id="booking_edit" href="{{ path('booking_homepage') }}">
+                            <button type="button" class="btn btn-default booking_edit" data-toggle="tooltip" data-placement="right" title="Modifier la réservation">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </button>
+                        </a>
+                        {{ form_end(form) }}
+
+                </div>
+                </div>
+                <div class="caddie col-sm-4">
+                    <div style="" id ="caddie_display" data-ticket = "{{ ticketQuantity }}">
+
+                        <strong>Panier : </strong>
+                        <span style="text-align: right">{{ ticketQuantity }}
+
+                            {% if  ticketQuantity > 1 %}
+                            Billets
+                            {% else %}
+                            Billet
+                            {% endif %}
+
+                        </span>
+
+
+                    </div>
+                    <div class="tarification">
+                        <dl>
+                            <dt>Tarifs du musée:</dt>
+
+                            <dd>
+                                De 4 à 12 ans : 8 euros.
+                            </dd>
+                            <dd>
+                                De 13 à 59 ans : 16 euros.
+                            </dd>
+                            <dd>
+                                60 ans et plus : 12 euros.
+                            </dd>
+                            <dd>
+                                Tarif réduit : 10 euros.
+                            </dd>
+                        </dl>
+                        <div class="note">
+                            L'entrée est gratuite pour les enfants de moins de 3 ans.<br/>
+                            Le tarif réduit est valable pour les étudiants, chomeurs et militaires (Un justificatif peut être demandé le jour de la visite).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var $collectionHolder = $('div#tickets_tickets');
+            var tickets = $('#caddie_display').attr('data-ticket');
+            // Construct form collection for (i) forms of ticket entity
+            for(i=0;i<tickets;i++){
+                var index = i;
+                addTicket($collectionHolder);
+                $('#caddie_display').attr('data-ticket', 0);
+
+                }
+
+            function addTicket($collectionHolder){
+                var template = $collectionHolder.attr('data-prototype').replace(/__name__label__/g, 'Visiteur numéro ' + (index + 1)).replace(/__name__/g, index);
+                var $prototype = $(template);
+                $collectionHolder.append($prototype);
+            }
+
+            // Customize collection form prototype
+            $('label:first').html('');
+            $('#tickets').attr({class: 'row'});
+            $("div[id='tickets']> div").removeClass() ;
+
+
+
+        });
+
+    </script>
+
+{% endblock %}
+
