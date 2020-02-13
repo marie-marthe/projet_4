@@ -23,10 +23,6 @@ class TicketsType extends AbstractType
                 'by_reference' => false,
                 'label'  =>false
 
-
-
-
-
             ))
 
         ;

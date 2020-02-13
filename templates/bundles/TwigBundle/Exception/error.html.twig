@@ -1,0 +1,54 @@
+{% extends'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+
+        .well
+        {
+            margin-top: 70px;
+            background-color: white;
+            box-shadow: 2px 2px 10px -5px black; ;
+            border-radius: unset;
+            height: 600px;
+            padding-left:50px;
+            padding-right:50px;
+        }
+
+        #error
+        {
+            margin-top: 100px;
+            padding: 30px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="well">
+            <h1 style="text-align: center">Une erreur est survenue...</h1>
+            <div class="row" >
+
+                <div class="col-sm-4 col-sm-offset-4" id="error">
+                    <p>
+                        Nous sommes désolé. Une erreur inattendue s'est produite.
+                    </p>
+                    <p style="margin-top: 20px">
+                        <a href="{{ path('index') }}">
+                            <button type="button" class="btn btn-default">Retour à la page d'acceuil</button>
+                        </a>
+
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -2,10 +2,6 @@
 
 namespace App\Services;
 
-
-
-
-
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
