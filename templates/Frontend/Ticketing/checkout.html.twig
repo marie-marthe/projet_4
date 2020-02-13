@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment {% endblock %}
+{% block stylesheets%}
+    {{ parent() }}
+    <style>
+        .well
+        {
+            margin-top: 70px;
+            padding-left: 20px;
+            padding-bottom: 100px;
+            background-color: white;
+            box-shadow: -2px -2px 10px -5px black ;
+            border-radius: unset;
+        }
+
+        .breadcrumb
+        {
+            background-color: white;
+        }
+
+        .checkout
+        {
+            margin-top: 100px;
+            margin-right: 15px;
+        }
+
+
+        .form-row
+        {
+            width: auto;
+            max-width: 380px;
+            height: 220px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            margin-left: 20px;
+            margin-right: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid lightgray;
+        }
+
+        #commandRe
+
+        .btn-control
+        {
+            margin-right: 10px;
+        }
+
+        #booking_edit
+        {
+            color: inherit;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+    <div class="container">
+        <div class="well">
+            <h1 style="text-align: center">Paiement</h1>
+            <!-- BreadCrumb-->
+            <ol class="breadcrumb" style="text-align: center">
+                <li><a href="#">Constituer votre panier</a></li>
+                <li><a href="#">Informations billets</a></li>
+                <li class="active">Paiement</li>
+            </ol>
+            <!-- Content-->
+
+            <div class="checkout row">
+
+                <div  class="col-sm-8">
+
+                    <h3>Votre commande</h3>
+
+                    <span>Date de la visite: {{ bookingDate }}</span><br/>
+                    <span>Votre adresse mail( Vous recevrez vos billets à cette adresse ): <em>{{ mail }}</em></span><br/>
+                    <span>Montant total à règler:<strong> {{ amount }} euros</strong></span><br/>
+
+                    <div class="button_control">
+                        <a id="booking_edit" href="{{ path('booking_homepage') }}">
+                            <button type="button" class="btn btn-default" style="margin-top: 10px">Modifier ma commande</button>
+                        </a>
+                    </div>
+                    <br/>
+
+                    <hr>
+                    <p>
+                        Afin de tester le formulaire de paiement, utiliser le numéro de carte suivant: 4242 4242 4242 4242
+                    </p>
+
+                    {% for message in app.session.flashbag.get('error') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <div class=" col-sm-4" id="details">
+
+                    <h4>Détail du panier:</h4>
+                    <p>Nombre de billets: {{ ticketQuantity }}</p>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>Nom</td>
+                            <td>Prénom</td>
+                            <td>Tarif réduit</td>
+                            <td>Prix (euros)</td>
+                        </tr>
+                        {% for ticket in tickets %}
+                        <tr>
+
+                            <td>
+                                {{ ticket.guestFirstName }}
+                            </td>
+                            <td>
+                                {{ ticket.guestLastName }}
+                            </td>
+                            <td>
+                                {% if ticket.discount %}
+                                    oui
+                                {% else %}
+                                    non
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ ticket.price }}
+                            </td>
+                            {% endfor %}
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+
+
+                <form action="" method="post"  id="payment-form" >
+                    <div class="form-row">
+                        <label for="card-name">
+                            Votre nom
+                        </label>
+                        <input type="text" name="card_name" class="form-control" id="card-name" placeholder="Votre nom" required>
+                        <label for="card-element">
+                            Coordonnées bancaires
+                        </label>
+                        <div id="card-element" class="form-control">
+                            <!-- a Stripe Element will be inserted here. -->
+                        </div>
+
+                        <!-- Used to display Element errors -->
+                        <div id="card-errors" role="alert"></div>
+                        <button type="submit" class="btn btn-default pull-bottom" style="margin-top: 10px">Payer {{ amount }} euros</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script type="text/javascript">
+
+        var stripe = Stripe('pk_test_2BiP9JchiJMaoXErveYT3CHw');
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        var style = {
+            base: {
+                // Add your base input styles here. For example:
+                color: '#32325d',
+                lineHeight: '18px',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+
+        };
+
+        // Create an instance of the card Element
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` <div>
+        card.mount('#card-element');
+
+        // Display errors
+        card.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Create a token or display an error when the form is submitted.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the customer that there was an error
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+        // Submit the form
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+
+
+
+    </script>
+
+{% endblock %}
