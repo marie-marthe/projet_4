@@ -1,6 +1,24 @@
-# config/routes.yaml
+index:
+    path: /
+    controller: App\Controller\Front\TicketingController::index
 
-# the "app_lucky_number" route name is not important yet
-app_lucky_number:
-  path: /lucky/number
-  controller: App\Controller\LuckyController::number
+booking_homepage:
+    path: /booking
+    controller: App\Controller\Front\TicketingController::booking
+
+booking_register:
+    path: /booking/register
+    controller: App\Controller\Front\TicketingController::register
+    requirements:
+        id: \d+
+
+booking_checkout:
+    path: /booking/checkout
+    controller: App\Controller\Front\TicketingController::checkout
+
+booking_success:
+    path: /booking/success
+    controller: App\Controller\Front\TicketingController::paymentSuccess
+
+
+
